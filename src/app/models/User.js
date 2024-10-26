@@ -25,6 +25,10 @@ const UserSchema = new Schema(
       required: true,
       minlength: 5, // Changed `min` to `minlength`
     },
+    contact: {
+      type: Object,
+      default: {},
+    }
   },
   { timestamps: true }
 );

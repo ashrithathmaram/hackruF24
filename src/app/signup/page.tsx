@@ -10,11 +10,10 @@ const GetStarted: React.FC = () => {
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [npi, setNpi] = useState('');
 
 
   const handleSubmit = async () => {
-    if (firstName === '' || lastName === '' || email === '' || password === '' || npi === '') {
+    if (firstName === '' || lastName === '' || email === '' || password === '') {
         return;
     }
     
@@ -29,7 +28,6 @@ const GetStarted: React.FC = () => {
             lastName: lastName,
             email: email,
             password: password,
-            npi: npi
         }),
         });
 
@@ -123,24 +121,6 @@ const GetStarted: React.FC = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="p-2 bg-transparent block w-full rounded-2xl border-0 py-1.5 text-theme-blue shadow-sm ring-1 ring-inset ring-theme-blue placeholder:text-gray-400 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="npi" className="block text-sm font-RalewayRegular leading-6 text-theme-blue">
-                NPI
-              </label>
-              <div className="mt-2">
-                <input
-                  id="npi"
-                  name="npi"
-                  type="npi"
-                  autoComplete="current-password"
-                  required
-                  value={npi}
-                  onChange={(e) => setNpi(e.target.value)}
                   className="p-2 bg-transparent block w-full rounded-2xl border-0 py-1.5 text-theme-blue shadow-sm ring-1 ring-inset ring-theme-blue placeholder:text-gray-400 sm:text-sm sm:leading-6"
                 />
               </div>
