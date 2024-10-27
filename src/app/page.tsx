@@ -10,82 +10,103 @@ import { Shield } from 'lucide-react';
 
 
 export default function Home() {
+
   const user = useSelector((state: RootState) => state.auth.user)
   const token = useSelector((state: RootState) => state.auth.token)
   const dispatch = useDispatch()
   const router = useRouter();
 
+  const [selectedResponses, setSelectedResponses] = useState({
+    whatsup: '',
+    hello: '',
+    hey: '',
+    yesInjury: '',
+    noInjury: '',
+    yesAlone: '',
+    noAlone: '',
+    bridgeKeyword: '',
+    contactName: '',
+    contactPhone: '',
+    contactAge: '',
+    contactVoiceType: '',
+    contactCallTopic: '',
+  });
+
+  const fetchContact = async () => {
+    try {
+      const response = await fetch(`/api/auth/?query=${user?._id}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+  
+      const data = await response.json();
+      console.log("use effect data.contact: ", data.data)
+      if (response.ok && data.data) {
+        // Update Redux state
+        dispatch(authActions.setContact(data.data));
+        
+        setSelectedResponses(prevState => ({
+          ...prevState,
+          ...data.data
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching contact:", error);
+    }
+  };
+
+  // Initial load
   useEffect(() => {
-        if(!user || !user?.firstName || token == "") {
-            router.push("/login")
-        }
-        else {
-            console.log("use effect ran")
-            // const fetchAppointments = async () => {
-            // const response = await fetch(`/api/auth/?query=${user?._id}`, {
-            //     method: "GET",
-            //     headers: { "Content-Type": "application/json" },
-            // });
-        
-            // const data = await response.json();
-            // if (response.ok) {
-            //     dispatch(appointmentActions.loadAppointments(data.data));
-            //     dispatch(authActions.setScripts(data.scripts))
-            //     // console.log("Dispatched script object: " + data.scripts)
-            // } else {
-            //     console.log(data.message);
-            // }
-            // };
-        
-            // fetchAppointments();
-        }
-      }, []);
+    if(!user || !user?.firstName || token == "") {
+      router.push("/login")
+    } else {
+      fetchContact();
+    }
+  }, []); // Only run on mount
 
-      const [selectedResponses, setSelectedResponses] = useState({
-        whatsup: '',
-        hello: '',
-        hey: '',
-        yesInjury: '',
-        noInjury: '',
-        yesAlone: '',
-        noAlone: '',
-        bridgeKeyword: '',
-        contactName: '',
-        contactPhone: '',
-        contactAge: '',
-        contactVoiceType: '',
-        contactCallTopic: '',
+  // Sync with Redux state changes
+  useEffect(() => {
+    if (user?.contact && Object.keys(user.contact).length > 0) {
+      setSelectedResponses(prevState => ({
+        ...prevState,
+        ...user.contact
+      }));
+    }
+  }, [user?.contact]);
+
+  const handleSave = async() => {
+    try {
+      const editUserResponse = await fetch("/api/auth", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          _id: user?._id,
+          contact: selectedResponses
+        }),
       });
-    
-      const responses = [
-        "I just need a reason to leave my current situation. No contact alert needed.",
-        "I need [NAME] to come to my location immediately. Send contact location.",
-        "This is an emergency. Send [NAME] my location, and bridge call to authorities..."
-      ];
 
-      console.log(user?.contact)
-      console.log(selectedResponses)
-
-    const handleSave = async() => {
-        const editUserResponse = await fetch("/api/auth", {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-              _id: user?._id,
-              contact: selectedResponses
-          }),
-      });
-  
       const editedUser = await editUserResponse.json();
-      console.log(editedUser);
-  
-      if (editedUser.response.ok) {
-          console.log("User contact updated successfully");
-          dispatch(authActions.setContact(selectedResponses));
+
+      console.log(editedUser)
+
+      // Check if the update was successful
+      if (editUserResponse.ok) {
+        console.log("User contact updated successfully");
+        
+        await fetchContact();
       } else {
-          console.error("Failed to update user contact:", editedUser.message);
+        console.error("Failed to update user contact:", editedUser.message);
       }
-      }
+    } catch (error) {
+      console.error("Error saving contact:", error);
+    }
+  }
+
+  const responses = [
+    "I just need a reason to leave my current situation. No contact alert needed.",
+    `I need my contact to come to my location immediately. Send contact location.`,
+    `This is an emergency. Send my location to my contact, and bridge call to authorities...`
+  ];
     
       return (
         <div className="min-h-screen bg-background-blue p-8">
@@ -146,7 +167,7 @@ export default function Home() {
                 {/* What's up row */}
                 <div className="grid grid-cols-12 gap-4 items-center">
                   <div className="col-span-2 font-RalewayRegular text-dark-blue">If you answer with</div>
-                  <div className="col-span-3 font-RalewayRegular text-gray-700 bg-white rounded-lg p-2 text-center">"What's up, [NAME]?"</div>
+                  <div className="col-span-3 font-RalewayRegular text-gray-700 bg-white rounded-lg p-2 text-center">"What's up, {selectedResponses.contactName}?"</div>
                   <div className="col-span-1 font-RalewayRegular text-dark-blue">then...</div>
                   <div className="col-span-6">
                     <select 
@@ -167,7 +188,7 @@ export default function Home() {
                 {/* Hello row */}
                 <div className="grid grid-cols-12 gap-4 items-center">
                   <div className="col-span-2 font-RalewayRegular text-dark-blue">If you answer with</div>
-                  <div className="col-span-3 font-RalewayRegular text-gray-700 bg-white rounded-lg p-2 text-center">"Hello, [NAME]?"</div>
+                  <div className="col-span-3 font-RalewayRegular text-gray-700 bg-white rounded-lg p-2 text-center">"Hello, {selectedResponses.contactName}?"</div>
                   <div className="col-span-1 font-RalewayRegular text-dark-blue">then...</div>
                   <div className="col-span-6">
                     <select 
@@ -188,7 +209,7 @@ export default function Home() {
                 {/* Hey row */}
                 <div className="grid grid-cols-12 gap-4 items-center">
                   <div className="col-span-2 font-RalewayRegular text-dark-blue">If you answer with</div>
-                  <div className="col-span-3 font-RalewayRegular text-gray-700 bg-white rounded-lg p-2 text-center">"Hey [NAME]?"</div>
+                  <div className="col-span-3 font-RalewayRegular text-gray-700 bg-white rounded-lg p-2 text-center">"Hey {selectedResponses.contactName}?"</div>
                   <div className="col-span-1 font-RalewayRegular text-dark-blue">then...</div>
                   <div className="col-span-6">
                     <select 
@@ -227,7 +248,7 @@ export default function Home() {
                 </div>
 
                 <div className="grid grid-cols-12 gap-4 items-center">
-                  <div className="col-span-2 font-RalewayRegular text-dark-blue">Are you alone?</div>
+                  <div className="col-span-2 font-RalewayRegular text-dark-blue">Is there help nearby?</div>
                   <div className="col-span-1 font-RalewayRegular text-dark-blue"> If yes ...</div>
                   <input 
                     placeholder="Keyword 1"

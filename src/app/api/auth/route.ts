@@ -41,8 +41,37 @@ export async function PATCH( req: Request ) {
       } 
   catch (error: unknown) {
       return NextResponse.json(
-          { message: "An error occurred while updating the Provider scripts" },
+          { message: "An error occurred while updating the User" },
           { status: 500 }
       );
+  }
+}
+
+export async function GET(req : any) {
+  try {
+
+    const searchParams = req.nextUrl.searchParams;
+    const userID = searchParams.get('query');
+
+    console.log("GET request userID from search params:" + userID)
+  
+    await connectMongoDB();
+
+    const user = await User.findById(userID);
+
+    let contact = user.contact
+
+    console.log(user.contact)
+
+    return NextResponse.json(
+      { data: contact},
+      { status: 200 },
+    )
+  }
+  catch (error: unknown) {
+    return NextResponse.json(
+      { message: "An error occurred while getting user's contact" },
+      { status: 500 }
+    );
   }
 }
