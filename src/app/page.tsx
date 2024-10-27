@@ -6,13 +6,14 @@ import { authActions } from '../app/state/reducers/authSlice';
 import { RootState } from '../app/state/stateTypes';
 import { useRouter } from "next/navigation";
 import React, {useState, useEffect} from 'react';
-import { Shield } from 'lucide-react';
+import { Shield, ChevronDown, ChevronUp, Heart} from 'lucide-react';
 
 
 export default function Home() {
 
   const user = useSelector((state: RootState) => state.auth.user)
   const token = useSelector((state: RootState) => state.auth.token)
+  const [isCollapsed, setIsCollapsed] = useState(true);
   const dispatch = useDispatch()
   const router = useRouter();
 
@@ -92,7 +93,7 @@ export default function Home() {
       // Check if the update was successful
       if (editUserResponse.ok) {
         console.log("User contact updated successfully");
-        
+        setIsCollapsed(false);
         await fetchContact();
       } else {
         console.error("Failed to update user contact:", editedUser.message);
@@ -117,7 +118,7 @@ export default function Home() {
                 <Shield className="w-6 h-6 text-blue-600" />
                 <span className="font-RalewayMedium text-dark-blue text-xl font-medium">BeSafe</span>
               </div>
-              <span className="font-RalewayLight text-dark-blue text-sm">Made with love at Rutgers</span>
+              <span className="flex font-RalewayLight text-dark-blue text-sm">Made with <span><Heart className="flex ml-1 mr-1 w-4 h-4"/></span> at Rutgers</span>
             </div>
     
             {/* Title */}
@@ -278,6 +279,37 @@ export default function Home() {
 
               </div>
             </div>
+
+            <div className="mt-6 bg-white rounded-xl">
+          <button 
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="w-full px-6 py-4 flex items-center justify-between text-dark-blue font-RalewayMedium hover:bg-gray-50 rounded-xl"
+          >
+            <span>Setup Instructions</span>
+            {isCollapsed ? (
+              <ChevronDown className="w-5 h-5" />
+            ) : (
+              <ChevronUp className="w-5 h-5" />
+            )}
+          </button>
+          
+          {!isCollapsed && (
+            <div className="px-6 py-4">
+              <ul className="space-y-3 font-RalewayRegular text-gray-700">
+              <li>1. Use this <a 
+                    href="https://www.icloud.com/shortcuts/fd824ad319d44f3f9dda9211e41c926c" 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="text-blue-600 hover:text-blue-800 underline"
+                  >link</a> to get the BeSafe shortcut on your iPhone</li>                
+                <li>2. Save the BeSafe number as the name of your trusted contact</li>
+                <li>3. Allow shortcuts app to access your location</li>
+                <li>4. Customize responses and keywords through web-interface</li>
+                <li>5. Test the system once before using it</li>
+              </ul>
+            </div>
+          )}
+        </div>
     
             {/* Save Button */}
             <div className="flex justify-end mt-6">
