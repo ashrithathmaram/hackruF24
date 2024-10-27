@@ -14,7 +14,7 @@ const UserSchema = new Schema(
       minlength: 2, // Changed `min` to `minlength`
       maxlength: 50, // Changed `max` to `maxlength`
     },
-    email: {
+    phone: {
       type: String, // Added type specification
       required: true,
       maxlength: 50, // Changed `max` to `maxlength`
@@ -27,6 +27,7 @@ const UserSchema = new Schema(
     },
     contact: {
       type: Object,
+      required: true,
       default: {},
     }
   },

@@ -5,7 +5,7 @@ import {User} from "../../models/User";
 
 export async function POST(req: Request) {
   try {
-    const { firstName, lastName, email, password, npi } = await req.json();
+    const { firstName, lastName, phone, password, npi } = await req.json();
 
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -14,8 +14,9 @@ export async function POST(req: Request) {
     await User.create({ 
       firstName, 
       lastName, 
-      email, 
+      phone, 
       password: hashedPassword,
+      contact: {},
     });
 
     return NextResponse.json({ message: "User signed up." }, { status: 201 });

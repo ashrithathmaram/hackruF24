@@ -8,9 +8,9 @@ const initialState = {
   user: {
     firstName: "",
     lastName: "",
-    email: "",
+    phone: "",
     password: "",
-    courses: [],
+    contact: {},
   },
   token: "",
 };
@@ -22,6 +22,9 @@ export const authSlice = createSlice({
     setMode: (state) => {
       state.mode = state.mode === "light" ? "dark" : "light";
     },
+    setContact: (state, action) => {
+      state.contact = action.payload
+    },
     setLogin: (state, action) => {
       state.user = action.payload.user;
       state.token = action.payload.token;
@@ -30,9 +33,9 @@ export const authSlice = createSlice({
       state.user = {
         firstName: "",
         lastName: "",
-        email: "",
+        phone: "",
         password: "",
-        courses: [],
+        contact: {},
       };
       state.token = "";
     },

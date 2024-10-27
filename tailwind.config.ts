@@ -13,6 +13,20 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      fontFamily: {
+        RalewayBold: ["RalewayBold"],
+        RalewayExtraBold: ["RalewayExtraBold"],
+        RalewayExtraLight: ["RalewayExtraLight"],
+        RalewayLight: ["RalewayLight"],
+        RalewayMedium: ["RalewayMedium"],
+        RalewayRegular: ["RalewayRegular"],
+        RalewaySemiBold: ["RalewaySemiBold"],
+      },
+      colors: {
+        'dark-blue': '#124CC0',
+        'pale-blue': '#E8F0FE',
+        'background-blue': '#F6F9FF',
+      },
     },
   },
   plugins: [],

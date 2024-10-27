@@ -1,17 +1,18 @@
 
 // Assuming the structure of the Admin model is similar to Provider but with potential differences
 export interface User {
-    id?: string; // Optional because it might not be present initially
+    _id?: string; // Optional because it might not be present initially
     firstName: string;
     lastName: string;
-    email: string;
+    phone: string;
     password: string;
-    npi?: string; // Optional
+    contact?: object; // Optional
     // Add any admin-specific fields here
 }
 
 export interface AuthState {
     user: User | null;
+    token: "";
 }
 
 // Combine all slices into a single RootState interface

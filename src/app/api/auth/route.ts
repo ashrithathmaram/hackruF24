@@ -7,11 +7,11 @@ import { env } from 'node:process';
 
 export async function POST(req: Request) {
   try{
-    const {email, password} = await req.json();
+    const {phone, password} = await req.json();
 
     await connectMongoDB();
     
-    const user = await User.findOne({ email: email })
+    const user = await User.findOne({ phone: phone })
     if (!user) return NextResponse.json({msg: "User does not exist. "}, {status: 400});
 
     const isMatch = await bcrypt.compare(password, user.password);
@@ -24,4 +24,25 @@ export async function POST(req: Request) {
 } catch (err: any){
   return NextResponse.json({ error: err.message });
 }
+}
+
+export async function PATCH( req: Request ) {
+  try {
+      const { _id, contact} = await req.json();
+      
+      await connectMongoDB();
+
+      const updatedUser = await User.findByIdAndUpdate({_id: _id}, {contact: contact}, {new: true} );
+
+      return NextResponse.json(
+          { data: updatedUser },
+          { status: 201 }
+          );
+      } 
+  catch (error: unknown) {
+      return NextResponse.json(
+          { message: "An error occurred while updating the Provider scripts" },
+          { status: 500 }
+      );
+  }
 }
